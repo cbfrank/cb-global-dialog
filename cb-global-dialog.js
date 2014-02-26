@@ -8,25 +8,35 @@
     self.shownCount = 0;
     self.isHiding = false;
     self.isShowing = false;
-    self.isShown = function() {
+    self.isShown = function () {
         return self.shownCount > 0;
     };
-    
+
     self.node = undefined;
-    self.initNode = function(opt) {
-        self.node = $('<div class="black-box modal hide fade in waitingModal" aria-hidden="false" style="width:auto; padding:10px;">' +
-                    '  <div class="inner-well">' +
-                    '    <img src="' + option.contentBaseUrl + '/images/loading.gif' + '"/>' +
-                    '    <span style="margin-left:15px;" id="GLOBALWAITINGMODALDISPALYSPAN">' + option.defaultText + '</span>' +
-                    '  </div>' +
-                    '</div>');
-        self.node.on('shown', function () {
+    self.initNode = function (opt) {
+        //self.node = $('<div class="black-box modal hide fade in waitingModal" aria-hidden="false" style="width:auto; padding:10px;">' +
+        //            '  <div class="inner-well">' +
+        //            '    <img src="' + option.contentBaseUrl + '/images/loading.gif' + '"/>' +
+        //            '    <span style="margin-left:15px;" id="GLOBALWAITINGMODALDISPALYSPAN">' + option.defaultText + '</span>' +
+        //            '  </div>' +
+        //            '</div>');
+        self.node = $('<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
+            '      <div class="modal-dialog" >' +
+            '        <div class="modal-content" >' +
+            '          <div class="modal-body">' +
+            '            <img src="' + option.contentBaseUrl + '/images/loading.gif' + '"/>' +
+            '            <span style="margin-left:15px;" id="GLOBALWAITINGMODALDISPALYSPAN">' + option.defaultText + '</span>' +
+            '          </div>' +
+            '        </div> ' +
+            '      </div> ' +
+            '    </div >');
+        self.node.on('shown.bs.modal', function () {
             if (!self.isShowing) {
                 //alert("Not Showing");
             }
             self.isShowing = false;
         });
-        self.node.on('hidden', function () {
+        self.node.on('hidden.bs.modal', function () {
             if (!self.isHiding) {
                 alert("Not Hidding");
             }
@@ -34,12 +44,12 @@
         });
         self.node.modal(opt);
     };
-    
-    self.updateText = function(text) {
+
+    self.updateText = function (text) {
 
     };
 
-    self.startProcessShow = function() {
+    self.startProcessShow = function () {
         while (self.showQueue.length > 0) {
             if (!self.isShown()) {
                 self.isShowing = true;
@@ -47,7 +57,7 @@
                     var opt = $.extend({}, option);
                     opt.show = true;
                     self.initNode(opt);
-                    setTimeout(function() {
+                    setTimeout(function () {
                         self.isShowing = false;
                     }, 1000);
                 } else {
@@ -60,7 +70,7 @@
         }
     };
 
-    self.startProcessHide = function() {
+    self.startProcessHide = function () {
         if (self.closeQueue.length > self.shownCount + self.showQueue.length) {
             //alert("Global dialog close count more than show count!");
         }
@@ -80,14 +90,14 @@
         }
     };
 
-    self.internalProcessStartWithWaiting = function() {
+    self.internalProcessStartWithWaiting = function () {
         if (self.isHiding || self.isShowing) {
             setTimeout(self.internalProcessStartWithWaiting, 200);
         } else {
             self.startProcessShow();
         }
     };
-    
+
     self.internalProcessHideWithWaiting = function () {
         if (self.isHiding || self.isShowing) {
             setTimeout(self.internalProcessHideWithWaiting, 400);
@@ -96,19 +106,19 @@
         }
     };
 
-    self.show = function(text) {
-        self.showQueue.push({            
+    self.show = function (text) {
+        self.showQueue.push({
             text: text
         });
 
         self.internalProcessStartWithWaiting();
     };
 
-    self.hide = function(hiddenCallback) {
+    self.hide = function (hiddenCallback) {
         self.closeQueue.push({
             hiddenCallback: hiddenCallback
         });
-        
+
         self.internalProcessHideWithWaiting();
     };
 };
