@@ -54,7 +54,7 @@
             if (!self.isShown()) {
                 self.isShowing = true;
                 if (!self.node) {
-                    var opt = $.extend({}, option);
+                    var opt = $.extend({ backdrop: 'static' }, option);
                     opt.show = true;
                     self.initNode(opt);
                     setTimeout(function () {
