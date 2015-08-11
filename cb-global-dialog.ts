@@ -21,6 +21,9 @@
             self.isHiding = false;
             self.isShowing = false;
             self.node = undefined;
+            if (!option.defaultText) {
+                option.defaultText = "Processing...";
+            }
         }
 
         isShown(): boolean {
@@ -31,7 +34,7 @@
             var self = this;
             var defaultText = option.defaultText;
             if (!defaultText) {
-                defaultText = "Processing...";
+                option.defaultText = defaultText = "Processing...";
             }
 
             var html = null;
@@ -52,16 +55,16 @@
             }
             self.node = $(html);
             self.node.on('shown.bs.modal', () => {
-                if (!this.isShowing) {
+                if (!self.isShowing) {
                     //alert("Not Showing");
                 }
-                this.isShowing = false;
+                self.isShowing = false;
             });
             self.node.on('hidden.bs.modal', () => {
-                if (!this.isHiding) {
+                if (!self.isHiding) {
                     alert("Not Hidding");
                 }
-                this.isHiding = false;
+                self.isHiding = false;
             });
             self.node.modal(option);
         }
@@ -80,7 +83,7 @@
                         opt.show = true;
                         self.initNode(opt);
                         setTimeout(() => {
-                            this.isShowing = false;
+                            self.isShowing = false;
                         }, 1000);
                     } else {
                         self.node.modal('show');
@@ -116,7 +119,7 @@
         private internalProcessStartWithWaiting(): void {
             var self = this;
             if (self.isHiding || self.isShowing) {
-                setTimeout(self.internalProcessStartWithWaiting, 200);
+                setTimeout(() => { self.internalProcessStartWithWaiting(); }, 200);
             } else {
                 self.startProcessShow();
             }
@@ -125,7 +128,7 @@
         private internalProcessHideWithWaiting(): void {
             var self = this;
             if (self.isHiding || self.isShowing) {
-                setTimeout(self.internalProcessHideWithWaiting, 400);
+                setTimeout(() => { self.internalProcessHideWithWaiting(); }, 400);
             } else {
                 self.startProcessHide();
             }
@@ -134,7 +137,7 @@
         show(text?: string): void {
             var self = this;
             if (typeof (text) === "undefined") {
-                text = this.option.defaultText;
+                text = self.option.defaultText;
             }
             self.showQueue.push({
                 text: text
