@@ -2,7 +2,7 @@
     export interface IGlobalWaitingOption extends ModalOptions {
         defaultText?: string;
         contentBaseUrl?: string;
-        getDialogNodeHtml?():string;
+        getDialogNodeHtml?(): string;
     }
 
     export class GlobalWaiting {
@@ -40,15 +40,15 @@
             }
             if (!html) {
                 html = '<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
-                    '      <div class="modal-dialog" >' +
-                    '        <div class="modal-content" >' +
-                    '          <div class="modal-body">' +
-                    '            <img src="' + option.contentBaseUrl + '/images/loading.gif' + '"/>' +
-                    '            <span style="margin-left:15px;" id="GLOBALWAITINGMODALDISPALYSPAN">' + defaultText + '</span>' +
-                    '          </div>' +
-                    '        </div> ' +
-                    '      </div> ' +
-                    '    </div >';
+                '      <div class="modal-dialog" >' +
+                '        <div class="modal-content" >' +
+                '          <div class="modal-body">' +
+                '            <img src="' + option.contentBaseUrl + '/images/loading.gif' + '"/>' +
+                '            <span style="margin-left:15px;" id="GLOBALWAITINGMODALDISPALYSPAN">' + defaultText + '</span>' +
+                '          </div>' +
+                '        </div> ' +
+                '      </div> ' +
+                '    </div >';
             }
             self.node = $(html);
             self.node.on('shown.bs.modal', () => {
@@ -66,8 +66,8 @@
             self.node.modal(option);
         }
 
-        updateText(test: string): void {
-
+        updateText(text: string): void {
+            this.node.find("#GLOBALWAITINGMODALDISPALYSPAN").text(text);
         }
 
         private startProcessShow(): void {
@@ -133,6 +133,9 @@
 
         show(text?: string): void {
             var self = this;
+            if (typeof (text) === "undefined") {
+                text = this.option.defaultText;
+            }
             self.showQueue.push({
                 text: text
             });
